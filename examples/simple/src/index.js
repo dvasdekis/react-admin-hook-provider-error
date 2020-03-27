@@ -1,6 +1,6 @@
 /* eslint react/jsx-key: off */
 import React from 'react';
-import { Admin, Resource } from 'react-admin'; // eslint-disable-line import/no-unresolved
+import { Admin, Resource, useAuthState, Loading } from 'react-admin'; // eslint-disable-line import/no-unresolved
 import { render } from 'react-dom';
 import { Route } from 'react-router-dom';
 
@@ -15,8 +15,8 @@ import posts from './posts';
 import users from './users';
 import tags from './tags';
 
-render(
-    <Admin
+const appContents = () => {
+<Admin
         authProvider={authProvider}
         dataProvider={dataProvider}
         i18nProvider={i18nProvider}
@@ -42,6 +42,23 @@ render(
             permissions ? <Resource name="users" {...users} /> : null,
             <Resource name="tags" {...tags} />,
         ]}
-    </Admin>,
-    document.getElementById('root')
+    </Admin>
+};
+
+const App = () => {
+    const { loading, authenticated } = useAuthState();
+        if (loading) {
+          return <Loading />;
+      }
+      if (authenticated) {
+        return (
+            <appContents />
+        );
+      }
+    return (
+        <appContents />
+    );
+  };
+render(
+<App />, document.getElementById('root')
 );
